@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="test">
+        <setting label="Server" type="text" id="server" option="urlencode" default=""/>
+        <setting label="Login" type="bool" id="login" default="false"/>
+        <setting label="Username" type="text" id="username" default="" enable="eq(-1,true)"/>
+        <setting label="Password" type="text" id="password" option="hidden" default="" enable="eq(-2,true)"/>
+    </category>
+</settings>
