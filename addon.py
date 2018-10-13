@@ -1,6 +1,7 @@
 import argparse
 import os.path
-import urllib.parse
+import urlparse
+import urllib
 
 import requests
 import xbmcplugin
@@ -16,7 +17,7 @@ class AddonOperator:
         query = {'mode': mode}
         if path is not None:
             query['path'] = path
-        return self.base_url + '?' + urllib.parse.urlencode(query)
+        return self.base_url + '?' + urllib.urlencode(query)
 
     def __init__(self, handle, base_url):
         self.handle = handle
@@ -27,7 +28,7 @@ class AddonOperator:
         self.authenticate(addon.getSetting('username'), addon.getSetting('password'))
 
     def authenticate(self, username, password):
-        auth_url = urllib.parse.urljoin(self.server, 'login')
+        auth_url = urlparse.urljoin(self.server, 'login')
         response = requests.post(auth_url, data={'username': username,
                                                  'password': password}).json()
         self.token = response['token']
@@ -54,7 +55,7 @@ class AddonOperator:
         xbmcplugin.endOfDirectory(self.handle)
 
     def list_folder_contents(self, folder):
-        url = urllib.parse.urljoin(self.server, 'dirparser')
+        url = urlparse.urljoin(self.server, 'dirparser')
         response = requests.post(url, data={'dir': folder,
                                             'token': self.token}).json()
         for file in response['contents']:
@@ -85,15 +86,15 @@ class AddonOperator:
         xbmcplugin.endOfDirectory(self.handle)
 
     def play_song(self, path):
-        song_meta_url = urllib.parse.urljoin(self.server, 'db/metadata')
+        song_meta_url = urlparse.urljoin(self.server, 'db/metadata')
         response = requests.post(song_meta_url, data={'filepath': path,
                                                       'token': self.token}).json()
         song_meta = response['metadata']
 
-        song_url = urllib.parse.urljoin(self.server,
-                                        'media/' + urllib.parse.quote_plus(path))
+        song_url = urlparse.urljoin(self.server,
+                                    'media/' + urllib.quote_plus(path))
         item = xbmcgui.ListItem(
-            path='{}?{}'.format(song_url, urllib.parse.urlencode({'token': self.token}))
+            path='{}?{}'.format(song_url, urllib.urlencode({'token': self.token}))
         )
         item.setInfo('music', {
             'artist': song_meta['artist'],
@@ -122,13 +123,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Kodi add-on for mStream server communication'
     )
-    parser.add_argument('base_url', help='launching URL of the add-on')
-    parser.add_argument('addon_handle', type=int, help='the handle of this add-on')
-    parser.add_argument('-m', '--mode',
-                        help='the operating mode of the add-on',
-                        choices=['files', 'play'])
-    parser.add_argument('-p', '--path',
-                        help='currently browsed path')
+    parser.add_argument('base_url')
+    parser.add_argument('addon_handle', type=int)
+    parser.add_argument('mode', choices=['files', 'play'])
+    parser.add_argument('path')
     args = parser.parse_args()
 
     operator = AddonOperator(args.addon_handle, args.base_url)
