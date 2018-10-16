@@ -1,5 +1,5 @@
-import argparse
 import os.path
+import sys
 import urlparse
 import urllib
 
@@ -116,18 +116,15 @@ class AddonOperator:
             else:
                 self.list_folder_contents(path)
         else:
-            self.play_song(path)
+            self.play_song(path[0])
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description='Kodi add-on for mStream server communication'
-    )
-    parser.add_argument('base_url')
-    parser.add_argument('addon_handle', type=int)
-    parser.add_argument('mode', choices=['files', 'play'])
-    parser.add_argument('path')
-    args = parser.parse_args()
+    print(sys.argv)
 
-    operator = AddonOperator(args.addon_handle, args.base_url)
-    operator.act(args.mode, args.path)
+    base_url = sys.argv[0]
+    addon_handle = int(sys.argv[1])
+    args = urlparse.parse_qs(sys.argv[2][1:])
+
+    operator = AddonOperator(addon_handle, base_url)
+    operator.act(args.get('mode'), args.get('path'))
