@@ -127,4 +127,4 @@ if __name__ == '__main__':
     args = urlparse.parse_qs(sys.argv[2][1:])
 
     operator = AddonOperator(addon_handle, base_url)
-    operator.act(args.get('mode'), args.get('path'))
+    operator.act(args.get('mode', None), args.get('path', None))
