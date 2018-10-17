@@ -108,13 +108,13 @@ class AddonOperator:
     def act(self, mode, path):
         if mode is None:
             self.build_filesystem()
-        elif mode == 'files':
+        elif mode[0] == 'files':
             if path is None and len(self.folders) == 1:
                 self.list_folder_contents(self.folders[0])
             elif path is None and len(self.folders) > 1:
                 self.list_folders(self.folders)
             else:
-                self.list_folder_contents(path)
+                self.list_folder_contents(path[0])
         else:
             self.play_song(path[0])
 
