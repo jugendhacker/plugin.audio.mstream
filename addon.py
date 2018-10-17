@@ -63,14 +63,16 @@ class AddonOperator:
                 self.add_item(name=file['name'],
                               url=self.build_url(
                                   mode='files',
-                                  path=os.path.join(file['path'], file['name'])
+                                  path=os.path.join(response['contents']['path'],
+                                                    file['name'])
                               ),
                               is_folder=True)
             else:
                 self.add_item(name=file['name'],
                               url=self.build_url(
                                   mode='play',
-                                  path=os.path.join(file['path'], file['name'])
+                                  path=os.path.join(response['contents']['path'],
+                                                    file['name'])
                               ),
                               properties={'IsPlayable': 'true'})
         xbmcplugin.endOfDirectory(self.handle)
