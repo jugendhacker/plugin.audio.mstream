@@ -1,4 +1,3 @@
-import os.path
 import sys
 import urlparse
 import urllib
@@ -63,27 +62,23 @@ class AddonOperator:
                 self.add_item(name=file['name'],
                               url=self.build_url(
                                   mode='files',
-                                  path=os.path.join(response['contents']['path'],
-                                                    file['name'])
+                                  path=response['path'] + file['name']
                               ),
                               is_folder=True)
             else:
                 self.add_item(name=file['name'],
                               url=self.build_url(
                                   mode='play',
-                                  path=os.path.join(response['contents']['path'],
-                                                    file['name'])
+                                  path=response['path'] + file['name']
                               ),
+                              icon=None,
                               properties={'IsPlayable': 'true'})
         xbmcplugin.endOfDirectory(self.handle)
 
     def list_folders(self, folders):
         for folder in folders:
             self.add_item(name=folder['name'],
-                          url=self.build_url(
-                              mode='files',
-                              path=os.path.join(folder['path'], folder['name'])
-                          ),
+                          url=self.build_url(mode='files', path=folder + '/'),
                           is_folder=True)
         xbmcplugin.endOfDirectory(self.handle)
 
@@ -117,7 +112,7 @@ class AddonOperator:
                 self.list_folders(self.folders)
             else:
                 self.list_folder_contents(path[0])
-        else:
+        elif mode[0] == 'play':
             self.play_song(path[0])
 
 
