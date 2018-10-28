@@ -16,7 +16,7 @@ class AddonOperator:
         query = {'mode': mode}
         if path is not None:
             query['path'] = path
-        return self.base_url + '?' + urllib.urlencode(query)
+        return self.base_url + '?' + urllib.urlencode(query, 'utf-8')
 
     def __init__(self, handle, base_url):
         self.handle = handle
