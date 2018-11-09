@@ -89,7 +89,7 @@ class AddonOperator:
         song_meta = response['metadata']
 
         song_url = urlparse.urljoin(self.server,
-                                    'media/' + urllib.quote_plus(path))
+                                    'media/' + urllib.quote(path))
         item = xbmcgui.ListItem(
             path='{}?{}'.format(song_url, urllib.urlencode({'token': self.token}))
         )
